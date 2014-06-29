@@ -95,23 +95,20 @@ case 2:
 cout << "Enter amount to be withdrawn: ";
 cin >> amt;
 object.withdraw(amt);
+filehandle.write((char*)&object,sizeof(object));
 break;
 case 3:
-filehandle.seekg(seekval);
 cout << "Enter your new details: " << endl << endl;
 object.filldet();
 filehandle.write((char*)&object,sizeof(object));
-cout << "Update successful" << endl;
 break;
 case 4:
 cout << "Enter amount to be deposited: ";
 cin >> amt;
 object.deposit(amt);
+filehandle.write((char*)&object,sizeof(object));
 break;
 case 5:
-cout << "byte no=" << seekval;
-filehandle.write((char*)&object,sizeof(object)) << flush;
-filehandle.close();
 exit(0);
 
 break;
@@ -132,7 +129,7 @@ cin >> a;
 void main()
 {
 accdet object;
-int input;
+int input,seekval;    
 fstream filehandle;
 filehandle.open("accounts.dat" , ios:: in | ios:: out | ios:: binary | ios::ate);
 filehandle.clear();
@@ -147,10 +144,9 @@ case 1:
 object.filldet();
 //prevent data redundancy!
 filehandle.write((char*)&object,sizeof(object));
-filehandle.close();
 break;
 case 2:
-int seekval=login(filehandle,object);
+seekval=login(filehandle,object);
 if(seekval >=0)
 menu(filehandle,object,seekval);
 else
@@ -161,6 +157,7 @@ cout << "Invalid input" << endl;
 getch();
 }
 }
+filehandle.close();
 getch();
 
 }
