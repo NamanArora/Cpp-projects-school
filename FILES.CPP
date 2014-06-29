@@ -22,6 +22,10 @@ cin >> pass;
 cout << "Enter your balance: ";
 cin >> bal;
 }
+void change(int newpass)
+{
+ pass=newpass;
+}
 void withdraw(int amt)
 {
 
@@ -79,12 +83,12 @@ void menu(fstream &filehandle,accdet &object,int seekval)
 filehandle.open("accounts.dat" , ios:: in | ios:: out | ios:: binary | ios::ate);
 filehandle.clear();
 filehandle.seekg(seekval);
-int input,amt;
+int input,amt,pass;
 char a;
 do{
 clrscr();
 cout << "ACCESS GRANTED!" << endl;
-cout << "1.Check balance" << endl << "2.Withdraw money" << endl << "3.Change information" << endl << "4.Deposit money" << endl << "5.Exit"<< "6.display";
+cout << "1.Check balance" << endl << "2.Withdraw money" << endl << "3.Change your password" << endl << "4.Deposit money" << endl << "5.Exit"<< "6.display";
 cin >> input;
 switch(input)
 {
@@ -98,8 +102,9 @@ object.withdraw(amt);
 filehandle.write((char*)&object,sizeof(object));
 break;
 case 3:
-cout << "Enter your new details: " << endl << endl;
-object.filldet();
+cout << "Enter your new password " << endl << endl;
+cin >> pass;
+object.change(pass);
 filehandle.write((char*)&object,sizeof(object));
 break;
 case 4:
@@ -129,7 +134,7 @@ cin >> a;
 void main()
 {
 accdet object;
-int input,seekval;    
+int input,seekval;
 fstream filehandle;
 filehandle.open("accounts.dat" , ios:: in | ios:: out | ios:: binary | ios::ate);
 filehandle.clear();
