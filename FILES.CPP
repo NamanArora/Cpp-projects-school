@@ -131,14 +131,15 @@ cin >> a;
 }
 void main()
 {
-clrscr();
 accdet object;
+int input;
 fstream filehandle;
 filehandle.open("accounts.dat" , ios:: in | ios:: out | ios:: binary | ios::ate);
 filehandle.clear();
+for(input=3; input>2 || input <1 || input==1;){
+clrscr();
 cout << "Menu screen" << endl << endl;
 cout << "1.Are you a new user?" << endl << "2.Existing user" << endl;
-int input;
 cin >> input;
 switch(input)
 {
@@ -155,6 +156,10 @@ menu(filehandle,object,seekval);
 else
 cout << "Invalid pass/name";
 break;
+default:
+cout << "Invalid input" << endl;
+getch();
+}
 }
 getch();
 
