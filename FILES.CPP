@@ -72,8 +72,9 @@ class account
    in.close();
   }
 
-  void change(int amt)
+  void change(char *newpass,int amt=0)
   {
+
    ofstream out("new.txt");
    ifstream in("accounts.txt");
    //prepare the line to be searched
@@ -100,6 +101,9 @@ class account
    remove("accounts.txt");
    balance+=amt;
    out << endl;
+
+   if(strcmp(newpass,""))
+   strcpy(password,newpass);
    out << "NAME=" << name << "PASS=" << password << "BAL=" << balance << endl;
    out.close();
    rename("new.txt","accounts.txt");
@@ -116,6 +120,7 @@ class account
 void menu(account ac)
 {
  int input,amt;
+ char newpass[15];
  do{
  clrscr();
  cout << "\t\t\t Access Granted!"
@@ -123,24 +128,31 @@ void menu(account ac)
       << "1.Deposit funds" << endl << endl
       << "2.Withdraw funds" << endl << endl
       << "3.Show balance" << endl << endl
+      << "4.Change password" << endl << endl
       << endl;
 
  cin >> input;
  switch(input)
  {
   case 1:
+  cout << "Enter the amount you want to deposit: ";
   cin >> amt;
-  ac.change(amt);
+  ac.change("",amt);
   break;
   case 2:
+  cout << "Enter the amount you want to withdraw: ";
   cin >> amt;
-  ac.change(-amt);
+  ac.change("",-amt);
   break;
   case 3:
   ac.show();
   break;
+  case 4:
+  cout << "Enter the new password: ";
+  cin >> newpass;
+  ac.change(newpass);
  }
-   }while(input<4);
+   }while(input<5);
 }
 
 void main()
