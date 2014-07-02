@@ -1,168 +1,172 @@
 #include<iostream.h>
-#include<conio.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<dos.h>
 #include<fstream.h>
 #include<string.h>
-class accdet;
-void menu(fstream &filehandle,accdet &object,int seekval);
-class accdet
+#include<stdlib.h>
+#include<conio.h>
+#include<stdio.h>
+class account
 {
-char name[10];
-int pass;
-int bal;
-public:
-void filldet()
-{
-cout << "Enter your name: ";
-cin >> name;
-cout << "Enter your pass: ";
-cin >> pass;
-cout << "Enter your balance: ";
-cin >> bal;
-}
-void change(int newpass)
-{
- pass=newpass;
-}
-void withdraw(int amt)
-{
+  char name[30];
+  char password[15];
+  int balance;
+  char line[45];
+  public:
+  //To create the account
+  void create()
+  {
+   ofstream out;
+   out.open("accounts.txt", ios::ate);
 
-cout << "Old balance: " << bal;
-bal=bal-amt;
-cout << "New balance: " << bal;
-}
-void deposit(int amt)
-{
+   if(out.eof())
+   out.clear();
 
-cout << "Old balance: " << bal;
-bal=bal+amt;
-cout << "New balance: " << bal;
-}
-void disp()
-{
-cout << "Balance=" << bal;
-system("pause");
-}
-void display()
-{
- cout << "name=" << name;
- cout << "pass=" << pass;
- cout << "bal=" << bal;
-}
-int check(char* gotname,int gotpass)
-{
-if(strcmp(gotname,name)==0 && gotpass==pass)
-return 1;
-else
-return 0;
-}
+   cout << "Enter your name: "; cin >> name;
+   cout << "Enter your password: "; cin >> password;
+   cout << "Enter your balance: "; cin >> balance;
+   out << "NAME=" << name << "PASS=" << password << "BAL=" << balance << "\n";
+  }
+
+  //To login in your account
+  int login()
+  {
+   ifstream in;
+   in.open("accounts.txt", ios::ate);
+   in.seekg(0);
+
+   if(in.eof())
+   in.clear();
+
+   cout << "Enter your name: ";
+   cin >> name;
+   cout << "Enter your password: ";
+   cin >> password;
+
+   //prepare the line to be searched
+   strcat(line,"NAME=");
+   strcat(line,name);
+   strcat(line,"PASS=");
+   strcat(line,password);
+
+   char *a,get[45];
+   int found=0;
+   while(!in.eof())   //we lost the inline facility
+   {
+   in.getline(get,45);
+   a=strstr(get,line); //source,search
+   if(a)      //match found for the exact string
+   {
+   found =1;
+   break;
+   }
+   }
+
+   if(found)
+   {
+   char *b=strstr(a,"BAL=");    //get pointer to desired position
+   b+=4;       //take the cursor to the digits
+   balance=atoi(b);    //convert char(digits) to int(digits)
+   return 1;
+   }
+   else
+   return 0;
+   in.close();
+  }
+
+  void change(int amt)
+  {
+   ofstream out("new.txt");
+   ifstream in("accounts.txt");
+   //prepare the line to be searched
+   strcpy(line,"");
+   strcat(line,"NAME=");
+   strcat(line,name);
+   strcat(line,"PASS=");
+   strcat(line,password);
+   strcat(line,"BAL=");
+   char bal[33];
+   itoa(balance,bal,10);
+   strcat(line,bal);
+
+   char get[45];
+   cout << "remove=" << line;
+   system("pause");
+   while(!in.eof())
+   {
+    in.getline(get,45);
+    if(!strcmp(get,line)==0)
+    out << get << endl;
+   }
+   in.close();
+   remove("accounts.txt");
+   balance+=amt;
+   out << endl;
+   out << "NAME=" << name << "PASS=" << password << "BAL=" << balance << endl;
+   out.close();
+   rename("new.txt","accounts.txt");
+  }
+
+  void show()
+  {
+   cout << "The current balance in your account is Rs. " << balance << endl;
+   system("pause");
+  }
+
 };
-int login(fstream &filehandle,accdet &object)
-{
-char name[10];
-int pass;
-cout << "Enter name: ";
-cin >> name;
-cout << "Enter pass: ";
-cin>> pass;
-filehandle.seekg(0);
-int i=0,size=sizeof(object);
-while(!filehandle.eof())
-{
-i++;
-filehandle.read((char*)&object,size);
-if(object.check(name,pass))
-return (i-1)*size;
-}
-return -1;
-}
-void menu(fstream &filehandle,accdet &object,int seekval)
-{
-filehandle.open("accounts.dat" , ios:: in | ios:: out | ios:: binary | ios::ate);
-filehandle.clear();
-filehandle.seekg(seekval);
-int input,amt,pass;
-char a;
-do{
-clrscr();
-cout << "ACCESS GRANTED!" << endl;
-cout << "1.Check balance" << endl << "2.Withdraw money" << endl << "3.Change your password" << endl << "4.Deposit money" << endl << "5.Exit"<< "6.display";
-cin >> input;
-switch(input)
-{
-case 1:
-object.disp();
-break;
-case 2:
-cout << "Enter amount to be withdrawn: ";
-cin >> amt;
-object.withdraw(amt);
-filehandle.write((char*)&object,sizeof(object));
-break;
-case 3:
-cout << "Enter your new password " << endl << endl;
-cin >> pass;
-object.change(pass);
-filehandle.write((char*)&object,sizeof(object));
-break;
-case 4:
-cout << "Enter amount to be deposited: ";
-cin >> amt;
-object.deposit(amt);
-filehandle.write((char*)&object,sizeof(object));
-break;
-case 5:
-exit(0);
 
-break;
-case 6:
-filehandle.clear();
-filehandle.seekg(0);
-while(!filehandle.eof())
+void menu(account ac)
 {
-filehandle.read((char*)&object,sizeof(object));
-object.display();
-cout << endl;
+ int input,amt;
+ do{
+ clrscr();
+ cout << "\t\t\t Access Granted!"
+ 		<< endl << endl << endl
+      << "1.Deposit funds" << endl << endl
+      << "2.Withdraw funds" << endl << endl
+      << "3.Show balance" << endl << endl
+      << endl;
+
+ cin >> input;
+ switch(input)
+ {
+  case 1:
+  cin >> amt;
+  ac.change(amt);
+  break;
+  case 2:
+  cin >> amt;
+  ac.change(-amt);
+  break;
+  case 3:
+  ac.show();
+  break;
+ }
+   }while(input<4);
 }
-}
-cout << "Return to main menu? [y/n] ";
-cin >> a;
-}while(a=='y');
-}
+
 void main()
 {
-accdet object;
-int input,seekval;
-fstream filehandle;
-filehandle.open("accounts.dat" , ios:: in | ios:: out | ios:: binary | ios::ate);
-filehandle.clear();
-for(input=3; input>2 || input <1 || input==1;){
-clrscr();
-cout << "Menu screen" << endl << endl;
-cout << "1.Are you a new user?" << endl << "2.Existing user" << endl;
-cin >> input;
-switch(input)
-{
-case 1:
-object.filldet();
-//prevent data redundancy!
-filehandle.write((char*)&object,sizeof(object));
-break;
-case 2:
-seekval=login(filehandle,object);
-if(seekval >=0)
-menu(filehandle,object,seekval);
-else
-cout << "Invalid pass/name";
-break;
-default:
-cout << "Invalid input" << endl;
-getch();
-}
-}
-filehandle.close();
-getch();
+ account acc;
+ int input,status;
+ char a;
+ clrscr();
+ do{
+ cout << "1.New user" << endl << "2.Old user" << endl;
 
+ cin >> input;
+ switch(input)
+ {
+  case 1:
+  acc.create();
+  break;
+  case 2:
+  status=acc.login();       //1 for login succeeded else 0
+ }
+
+ if(input==2)           //to only show when tried to login
+ if(status)
+ menu(acc);
+ else
+ cout << "Invalid name/pass";
+ }while(input==1);
+ system("pause");
 }
