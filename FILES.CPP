@@ -119,7 +119,7 @@ class account
 
 void menu(account ac)
 {
- int input,amt;
+ int input,amt,counter=0;
  char newpass[15];
  do{
  clrscr();
@@ -142,7 +142,14 @@ void menu(account ac)
   case 2:
   cout << "Enter the amount you want to withdraw: ";
   cin >> amt;
+  counter+=amt;
+  if(counter <=20000)
   ac.change("",-amt);
+  else
+  {
+  cout << "Withdrawal limit reached for this session" << endl;
+  system("pause");
+  }
   break;
   case 3:
   ac.show();
