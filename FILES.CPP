@@ -40,7 +40,7 @@ class account
    cin >> name;
    cout << "Enter your password: ";
    cin >> password;
-
+   strcpy(line,""); //tc picks up junk @line
    //prepare the line to be searched
    strcat(line,"NAME=");
    strcat(line,name);
