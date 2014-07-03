@@ -89,7 +89,6 @@ class account
    strcat(line,bal);
 
    char get[45];
-   cout << "remove=" << line;
    system("pause");
    while(!in.eof())
    {
@@ -120,17 +119,18 @@ class account
 void menu(account ac)
 {
  int input,amt,counter=0;
- char newpass[15];
+ char newpass[15],name[30];
  do{
  clrscr();
- cout << "\t\t\t Access Granted!"
+ cout << "\t\t\t\t Access Granted!"
  		<< endl << endl << endl
       << "1.Deposit funds" << endl << endl
       << "2.Withdraw funds" << endl << endl
       << "3.Show balance" << endl << endl
       << "4.Change password" << endl << endl
+      << "5.Exit" << endl << endl
       << endl;
-
+ cout << "Enter your option: ";
  cin >> input;
  switch(input)
  {
@@ -158,17 +158,23 @@ void menu(account ac)
   cout << "Enter the new password: ";
   cin >> newpass;
   ac.change(newpass);
+  break;
+  case 5:
+  exit(0);
+  break;
  }
-   }while(input<5);
+   }while(input<6);
 }
+
 
 void main()
 {
  account acc;
  int input,status;
  char a;
- clrscr();
+
  do{
+ clrscr();
  cout << "1.New user" << endl << "2.Old user" << endl;
 
  cin >> input;
@@ -179,6 +185,7 @@ void main()
   break;
   case 2:
   status=acc.login();       //1 for login succeeded else 0
+  break;
  }
 
  if(input==2)           //to only show when tried to login
@@ -186,6 +193,6 @@ void main()
  menu(acc);
  else
  cout << "Invalid name/pass";
- }while(input==1);
+ }while(input!=2);
  system("pause");
 }
