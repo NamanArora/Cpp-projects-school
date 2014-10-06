@@ -5,18 +5,30 @@
 #include<dos.h>
 #include<fstream.h>
 
+#define STARTX 200
+#define STARTY 200
 #define SPEED 100
-#define CHASESPEED 5
-#define USERSPEED 5
-int x=200,y=200;
-int x1=100,y1=200;
+#define CHASESPEED 3
+#define USERSPEED 2
+int x=STARTX,y=STARTY;
+int x1=200,y1=500;
 int chase()
 {
 if(x1==x && y1==y)
 exit(0); //balls at same place, collision, game over
-if(x1==x)
+else if(x1==x)
 {
 //same x column
+if(y1>y) //its above
+{
+y1-=CHASESPEED;
+circle(x1,y1,30);
+}
+else
+{
+y1+=CHASESPEED;
+circle(x1,y1,30);
+}
 }
 
 else if(y1==y)
@@ -34,20 +46,21 @@ circle(x1,y1,30);
 }
 return 1;
 }
+
 }
 void movex(int i=0)
 {
  static int dis;
  dis+=i*USERSPEED;
- x=200+dis;
+ x=STARTX+dis;
  cleardevice();
  circle(x,y,30);
 }
-void movey(int i)
+void movey(int i=0)
 {
 static int dis;
 dis+=i*USERSPEED;
-y=200+dis;
+y=STARTY+dis;
 cleardevice();
 circle(x,y,30);
 }
@@ -57,7 +70,7 @@ void main()
 int gd=DETECT,gm;
 initgraph(&gd,&gm, "C:\\TC\\BGI");
 circle(x1,y1,30);
-circle(200,200,30);
+circle(STARTX,STARTY,30);
 unsigned char a;
 int b=1;
 while(b)
