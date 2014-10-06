@@ -4,11 +4,41 @@
 #include<stdlib.h>
 #include<dos.h>
 #include<fstream.h>
+
+#define SPEED 100
+#define CHASESPEED 5
+#define USERSPEED 5
 int x=200,y=200;
-void movex(int i)
+int x1=100,y1=200;
+int chase()
+{
+if(x1==x && y1==y)
+exit(0); //balls at same place, collision, game over
+if(x1==x)
+{
+//same x column
+}
+
+else if(y1==y)
+{
+//same y row
+if(x1>x)
+{
+x1-=CHASESPEED;
+circle(x1,y1,30);
+}
+else
+{
+x1+=CHASESPEED;
+circle(x1,y1,30);
+}
+return 1;
+}
+}
+void movex(int i=0)
 {
  static int dis;
- dis+=i*5;
+ dis+=i*USERSPEED;
  x=200+dis;
  cleardevice();
  circle(x,y,30);
@@ -16,7 +46,7 @@ void movex(int i)
 void movey(int i)
 {
 static int dis;
-dis+=i*5;
+dis+=i*USERSPEED;
 y=200+dis;
 cleardevice();
 circle(x,y,30);
@@ -26,11 +56,22 @@ void main()
 {
 int gd=DETECT,gm;
 initgraph(&gd,&gm, "C:\\TC\\BGI");
+circle(x1,y1,30);
+circle(200,200,30);
 unsigned char a;
-	while(!kbhit())
-	{
-
-		a=getch();
+int b=1;
+while(b)
+{
+while(!kbhit())
+{
+setbkcolor(2);
+//animation material
+movex();
+chase();
+delay(SPEED);
+cleardevice();
+}
+a=getch();
 		//for detect the function\arrow keys
 		//we must call the getch() again
 		//testing if a is '0' or '0xE0'
@@ -40,25 +81,25 @@ unsigned char a;
 			break;
 		else if (a==72)
 		{
-		       cout << "up";
-		       movey(-1);
+
+			movey(-1);
 		}
 		else if (a==80)
 		{
-		    movey(1);
-			cout << "down";
+			movey(1);
+
 		}
 		else if (a==75)
 		{
-			cout <<"LEFT";
+
 			movex(-1);
 		}
 		else if (a==77)
 		{
-			cout << "RIGHT";
+
 			movex(1);
 		}
-	}
+}
 
 
 }
