@@ -104,9 +104,12 @@ void main()
  setfillstyle(SOLID_FILL, BLUE);
  ifstream file("notes.txt");
  int a,arr[4]={0},i=-1;
- 
+ int x,y,button;
+ showmouseptr();
+ getch();
  while(!kbhit())
  {
+ getmousepos(&button,&x,&y); //stores the location of mouse in x and y each time
  //get the next box
  file >> a;
  
@@ -132,7 +135,9 @@ void main()
  for(int d=3; d>=1; d--)
  arr[d]=arr[d-1];
  
- delay(500);
+  
+ 
+ delay(1000);
  cleardevice();
  
  }
