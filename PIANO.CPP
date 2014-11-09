@@ -37,7 +37,7 @@ void getmousepos(int *button,int *x,int *y)
     *x=o.x.cx;
     *y=o.x.dx;
 }
-void create()
+void grid()
 {
  line((getmaxx()*3/4)*1/4,0,(getmaxx()*3/4)*1/4,getmaxy());
  line((getmaxx()*3/4)*2/4,0,(getmaxx()*3/4)*2/4,getmaxy());
@@ -48,27 +48,9 @@ void create()
  line(getmaxx()*3/16,getmaxy()*3/4,getmaxx()*3/4,getmaxy()*3/4);
 }
 
-void main()
+void fill(int i)
 {
- clrscr();
- int gd=DETECT,gm;
- initgraph(&gd,&gm, "C:\\TC\\BGI");
- 
- //Keyboard creation
-
- //Keyboard ends
- //Note reading
- setfillstyle(SOLID_FILL, BLUE);
- ifstream file("notes.txt");
- int a,arr[4]={0},i=-1;
- while(file >> a)
- {
- create();
- arr[0]=a;
- if(i<=3)
- i++;
- for(int k=0; k<4; k++)
- switch(arr[k])
+switch(i)
  {
 	case 1:
 	floodfill((getmaxx()*3/4)*1/4+1,0,WHITE);
@@ -107,17 +89,54 @@ void main()
 	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,WHITE);
 	break;
  }
- for(k=0; k<4; k++)
- cout << arr[k];
- cout << endl;
+}
+
+void main()
+{
+ clrscr();
+ int gd=DETECT,gm;
+ initgraph(&gd,&gm, "C:\\TC\\BGI");
+ 
+ //Keyboard creation
+
+ //Keyboard ends
+ //Note reading
+ setfillstyle(SOLID_FILL, BLUE);
+ ifstream file("notes.txt");
+ int a,arr[4]={0},i=-1;
+ 
+ while(!kbhit())
+ {
+ //get the next box
+ file >> a;
+ 
+ //draw the grid again
+ grid();
+ 
+ //store the value
+ arr[0]=a;
+ 
+ //to prevent incrmenting values initially
+ if(i<=3)
+ i++;
+ 
+ //fill the colour
+ for(int k=0; k<4; k++)
+ fill(arr[k]);
+
+ //move the box down
  for(int f=0; f<=i; f++)
  arr[f]+=3 ;
+ 
+ //shift the array to right
  for(int d=3; d>=1; d--)
  arr[d]=arr[d-1];
-  
+ 
  delay(500);
  cleardevice();
+ 
  }
+ 
  
  
  
