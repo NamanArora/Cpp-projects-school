@@ -6,37 +6,6 @@
 #include<graphics.h>
 #include<fstream.h>
 
- // Mouse functions
-        union REGS i,o;
-// Initialize mouse
-        void initmouse()
-        {
-            i.x.ax=0;
-            int86(0x33,&i,&o);
-        }
-
-// Show Mouse pointer
-        void showmouseptr()
-        {
-            i.x.ax=1;
-            int86(0x33,&i,&o);
-        }
-// Hide Mouse pointer
-        void hidemouseptr()
-        {
-            i.x.ax=2;
-            int86(0x33,&i,&o);
-        }
-
-void getmousepos(int *button,int *x,int *y)
-{
-    i.x.ax=3;
-    int86(0x33,&i,&o);
-
-    *button=o.x.bx;
-    *x=o.x.cx;
-    *y=o.x.dx;
-}
 void grid()
 {
  line((getmaxx()*3/4)*1/4,0,(getmaxx()*3/4)*1/4,getmaxy());
@@ -50,8 +19,10 @@ void grid()
 
 void fill(int i)
 {
+setfillstyle(SOLID_FILL, BLUE);
 switch(i)
  {
+	
 	case 1:
 	floodfill((getmaxx()*3/4)*1/4+1,0,WHITE);
 	break;
@@ -103,13 +74,12 @@ void main()
  //Note reading
  setfillstyle(SOLID_FILL, BLUE);
  ifstream file("notes.txt");
- int a,arr[4]={0},i=-1;
- int x,y,button;
- showmouseptr();
- getch();
- while(!kbhit())
+ int a,arr[4]={0},i=-1,b=1;
+ int score=-1; //result increments the val
+ char press;
+
+ while(b)
  {
- getmousepos(&button,&x,&y); //stores the location of mouse in x and y each time
  //get the next box
  file >> a;
  
@@ -127,25 +97,82 @@ void main()
  for(int k=0; k<4; k++)
  fill(arr[k]);
 
+ if(i>=3)
+ {
+ score++;
+ press=getch();
+ switch(press)
+ {
+ case 27:
+ exit(0);
+ case 'a':
+ if(arr[3]==10)
+ setfillstyle(SOLID_FILL, GREEN);
+ else
+ {
+ b=0;
+ setfillstyle(SOLID_FILL, RED);
+ }
+ floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,WHITE);
+ break;
+ 
+ case 's':
+ if(arr[3]==11)
+ setfillstyle(SOLID_FILL, GREEN);
+ else
+ {
+ b=0;
+ setfillstyle(SOLID_FILL, RED);
+ }
+ floodfill((getmaxx()*3/4)*2/4+1,getmaxy()*3/4+1,WHITE);
+ break;
+
+ case 'd':
+ if(arr[3]==12)
+ setfillstyle(SOLID_FILL, GREEN);
+ else
+ {
+ b=0;
+ setfillstyle(SOLID_FILL, RED);
+ }
+ floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,WHITE);
+ break;
+ default:
+ b=0;
+ }
+ }
+
  //move the box down
  for(int f=0; f<=i; f++)
  arr[f]+=3 ;
- 
+
  //shift the array to right
  for(int d=3; d>=1; d--)
  arr[d]=arr[d-1];
- 
-  
- 
- delay(1000);
- cleardevice();
- 
- }
- 
- 
- 
- 
 
+ delay(100);
+ cleardevice();
+ }
+ cleardevice();
+ file.close();
+ fstream scores("scores.txt",ios::ate | ios::in | ios::out);
+ cout << "Your score was " << score << endl;
+ cout << "Enter your name: ";
+ char name[20];
+ cin >> name;
+ if(scores)
+ scores<< endl << name << " " << score ;
+ else
+ cout << "Unable to save score!";
+ cout << endl << endl<< "Scores: " << endl << endl;
+ scores.seekg(ios::beg);
+ while(!scores.eof())
+ {
+ scores.getline(name,20,' ');
+ cout << name;
+ scores.getline(name,20);
+ cout << '\t' << name << endl;
+ }
  getch();
 
 }
