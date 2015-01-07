@@ -62,37 +62,39 @@ switch(i)
  }
 }
 
+int rnd()
+{
+ struct time t;
+ gettime(&t);
+ return (int)t.ti_hund%3+1;
+}
+
 void main()
 {
  clrscr();
  int gd=DETECT,gm;
  initgraph(&gd,&gm, "C:\\TC\\BGI");
- 
- //Keyboard creation
-
- //Keyboard ends
  //Note reading
  setfillstyle(SOLID_FILL, BLUE);
- ifstream file("notes.txt");
  int a,arr[4]={0},i=-1,b=1;
  int score=-1; //result increments the val
  char press;
 
  while(b)
  {
- //get the next box
- file >> a;
- 
+ //get the next box using my randomize func
+ a=rnd();
+
  //draw the grid again
  grid();
- 
+
  //store the value
  arr[0]=a;
- 
+
  //to prevent incrmenting values initially
  if(i<=3)
  i++;
- 
+
  //fill the colour
  for(int k=0; k<4; k++)
  fill(arr[k]);
@@ -115,7 +117,7 @@ void main()
  }
  floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,WHITE);
  break;
- 
+
  case 's':
  if(arr[3]==11)
  setfillstyle(SOLID_FILL, GREEN);
@@ -154,7 +156,6 @@ void main()
  cleardevice();
  }
  cleardevice();
- file.close();
  fstream scores("scores.txt",ios::ate | ios::in | ios::out);
  cout << "Your score was " << score << endl;
  cout << "Enter your name: ";
