@@ -1,4 +1,4 @@
-#include<iostream.h>
+#include<time.h>
 #include<conio.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -8,34 +8,46 @@
 
 void intro()
 {
-  setfillstyle(2,RED);
-  settextstyle(7,HORIZ_DIR,7);
-  setcolor(3);
-  outtextxy(100,100,"PIANO TILES");
-  settextstyle(7,HORIZ_DIR,3);
-  outtextxy(160,250,"BY: NAMAN & AKARSH" );
-  getch();
-  setcolor(15);
-  cleardevice();
+  settextstyle(7,HORIZ_DIR,7);  // For setting the text: font,direction,size
+  setcolor(3);	  //Set color to blue
+  outtextxy(100,150,"PIANO TILES"); //Place the text at 100,100
+  settextstyle(7,HORIZ_DIR,3); //change the font size
+  outtextxy(150,250,"BY: NAMAN & AKARSH" );
+  getch(); //wait for user to press any button
+  setcolor(15); //set color to default(black)
+  cleardevice(); //clear the screen
+}
+
+void over()
+{
+ settextstyle(3,HORIZ_DIR,7);  // For setting the text: font,direction,size
+ setcolor(4);	  //Set color to red
+ outtextxy(140,10,"Game over!"); //Place the text at 100,100
+
 }
 
 void grid()
 {
- line((getmaxx()*3/4)*1/4,0,(getmaxx()*3/4)*1/4,getmaxy());
+ //Monitor is in the 4th quadrant
+ line((getmaxx()*3/4)*1/4,0,(getmaxx()*3/4)*1/4,getmaxy()); // keep the x axis constant and draw 4 lines vertically
  line((getmaxx()*3/4)*2/4,0,(getmaxx()*3/4)*2/4,getmaxy());
  line((getmaxx()*3/4)*3/4,0,(getmaxx()*3/4)*3/4,getmaxy());
  line((getmaxx()*3/4)*4/4,0,(getmaxx()*3/4)*4/4,getmaxy());
- line(getmaxx()*3/16,getmaxy()/4,getmaxx()*3/4,getmaxy()/4);
+ line(getmaxx()*3/16,getmaxy()/4,getmaxx()*3/4,getmaxy()/4); // keep y axis constant and draw 3 lines horizontally
  line(getmaxx()*3/16,getmaxy()/2,getmaxx()*3/4,getmaxy()/2);
  line(getmaxx()*3/16,getmaxy()*3/4,getmaxx()*3/4,getmaxy()*3/4);
 }
 
 void fill(int i)
 {
-setfillstyle(SOLID_FILL, BLUE);
-switch(i)
+setfillstyle(SOLID_FILL, BLUE); //blue color for the tiles
+switch(i) // i tells which tile to fill
  {
-
+/*
+	Floodfill fills the color in the desired area
+	The first 2 parameters define a point inside the region to be coloured
+	The last paramater tells the color of the boundary that needs to be filled
+ */
 	case 1:
 	floodfill((getmaxx()*3/4)*1/4+1,0,WHITE);
 	break;
@@ -77,41 +89,15 @@ switch(i)
 
 int rnd()
 {
- struct time t;
- gettime(&t);
- //ti_hund=hundredth of a second
- //rand int <=3
- return (int)t.ti_hund%3+1;
+ return rand()%3+1 ; //get any rand var between 1 and 3, stdlib.h
 }
 
-int time()
+void bar(int time)
 {
- 
- char f[10];
- struct time t;
- gettime(&t);
- settextstyle(3, HORIZ_DIR, 1);
-
- //stores the starting time
- static int time=t.ti_sec;
- //current time-starting time=diff
- int diff=t.ti_sec-time;
- //put the time limit
- if(diff>=30 || diff <0 )
- return 0;
- itoa(diff,f,10);
- outtextxy(getmaxx()-150,100,"Time: ");
- outtextxy(getmaxx()-80, 100, f);
- return 1;
-}
-
-void bar(int score)
-{
- //score meter
- int update=score*3;
- rectangle(0,getmaxy()-update,50,getmaxy());
- setfillstyle(SOLID_FILL, MAGENTA);
- floodfill(1,getmaxy()-score+1,WHITE);
+ int update=time*16; //no of pixels to update on each second
+ rectangle(0,getmaxy()-update,50,getmaxy()); //draw the bar with the coordinates
+ setfillstyle(SOLID_FILL, RED); //colour to be filled is set to RED
+ floodfill(1,getmaxy()-time+1,WHITE); //Fill the colour
 }
 
 void main()
@@ -119,44 +105,39 @@ void main()
  int gd=DETECT,gm;
  initgraph(&gd,&gm, "C:\\TC\\BGI");
  intro();
- setfillstyle(SOLID_FILL, BLUE);
  int a,arr[4]={0},i=-1,b=1;
  int score=-1; //result increments the val
  char press;
+ time_t start,end; //time_t variables can store values returned by time function
+ time(&start); //stores the current time in start
+ time(&end); //stores the current time in end
+ int diff=difftime(end,start); //stores the time elapsed
+ srand(time(0)); //stdlib.h, time(0)
 
- while(b)
+ while(b && diff<=30) //run while b is true and time elapsed is less than 30 secs
  {
-
-
- //key press bar
- bar(score);
-
- //get the next box using randomize func
- a=rnd();
-
- //draw the grid again
- grid();
-
- //store the value
- arr[0]=a;
-
- //to prevent incrmenting values initially
- if(i<=3)
+ bar(diff); //shows the time bar
+ a=rnd(); //get the next box using randomize func
+ grid(); //draw the grid again else the old boxes wont go away
+ arr[0]=a; //store the value in our grid array
+ if(i<=3) //wait for array to get filled
  i++;
-
- //fill the colour
- for(int k=0; k<4; k++)
- fill(arr[k]);
-
- if(i>=3)
+ for(int k=0; k<4; k++) //fill the colour
+ fill(arr[k]); //color the boxes corresponding to our grid array
+ if(i>=3) //dont start game until array is filled
  {
- score++;
- press=getch();
+ score++; //score keeper integer
+ press=getch(); //get the key-press
  switch(press)
  {
- case 27:
+ case 27: //escape key ascii
  exit(0);
- case 'a':
+
+ /*
+	If the key-press and the last number in our array is same
+	then show green colour on the button else red.
+ */
+ case 'a': // Button 'a' from keyboard
  if(arr[3]==10)
  setfillstyle(SOLID_FILL, GREEN);
  else
@@ -167,7 +148,7 @@ void main()
  floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,WHITE);
  break;
 
- case 's':
+ case 's': // Button 's' from keyboard
  if(arr[3]==11)
  setfillstyle(SOLID_FILL, GREEN);
  else
@@ -178,7 +159,7 @@ void main()
  floodfill((getmaxx()*3/4)*2/4+1,getmaxy()*3/4+1,WHITE);
  break;
 
- case 'd':
+ case 'd': // Button 'd' from keyboard
  if(arr[3]==12)
  setfillstyle(SOLID_FILL, GREEN);
  else
@@ -188,39 +169,37 @@ void main()
  }
  floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,WHITE);
  break;
- default:
- b=0;
+
+ default: //if any other key is pressed
+ b=0; //set b to zero to end the game
  }
  }
 
- //move the box down
- for(int f=0; f<=i; f++)
+ for(int f=0; f<=i; f++) //move the box down
  arr[f]+=3 ;
-
- //shift the array to right
  for(int d=3; d>=1; d--)
- arr[d]=arr[d-1];
-
+ arr[d]=arr[d-1]; //shifts the array to the right to accomodate new val
  delay(100);
  cleardevice();
-  //time keeper
- int lim=time();
- if(lim==0)
- b=0;
+ time(&end); //get the time
+ diff=difftime(end,start); //update time elapsed
  }
  cleardevice();
- fstream scores("scores.txt",ios::ate | ios::in | ios::out);
- cout << "Your score was " << score << endl;
+ over();
+ fstream scores("scores.txt",ios::ate | ios::in | ios::out); //Open the file in read,write,append-to-end mode
+ gotoxy(28,10); 
+ cout << "Your score was " << score;
+ gotoxy(27,12);
  cout << "Enter your name: ";
  char name[20];
  cin >> name;
  if(scores)
- scores<< endl << name << " " << score ;
+ scores<< endl << name << " " << score ; //write the name and score to the file
  else
  cout << "Unable to save score!";
  cout << endl << endl<< "Scores: " << endl << endl;
- scores.seekg(ios::beg);
- while(!scores.eof())
+ scores.seekg(ios::beg);  //move the pointer to the starting of file
+ while(!scores.eof()) //display al the previous score
  {
  scores.getline(name,20,' ');
  cout << name;
@@ -228,5 +207,4 @@ void main()
  cout << '\t' << name << endl;
  }
  getch();
-
 }
