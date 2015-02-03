@@ -11,3 +11,6 @@ Input: apple
 for(int i=0; i<6; i++)
 cout << a[i];
 Output:apple\0 //single space is seen after 'e' because of \0. Junk values follow.
+
+gets(a) stdio.h
+stores the whole string with \0
