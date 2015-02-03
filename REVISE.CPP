@@ -3,7 +3,24 @@ input:apple
 cin.getline(a,5);
 output:appl\0
 It extracts n-1 characters and puts \0 at nth position. (n-1) chars+ \0 is stored in the char-array.
-If delimiter is met, it stores till the delimiter(excluded). and then \0 is put after it and stored. No more chars are read
+If delimiter is met, it stores till the delimiter(included). but it discards it and puts \0.Storing stops here. next reading 
+starts after the delimiter.
+input: apple
+cin.getline(a,20,'l');
+appl<-pointer->e
+cin.getline(a,20);
+e\0
+
+cin.get(char-array,n,delimiter)
+same function as getline but 
+when delimiter is met, it stops before that. next reading starts from the delimiter
+input: apple
+cin.get(a,20,'l');
+a= app<-pointer->le
+
+cin.get(a,20);
+le\0
+
 
 cin >> a;
 stores char in a with \0.
@@ -14,3 +31,4 @@ Output:apple\0 //single space is seen after 'e' because of \0. Junk values follo
 
 gets(a) stdio.h
 stores the whole string with \0
+
