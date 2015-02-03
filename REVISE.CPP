@@ -3,11 +3,11 @@ input:apple
 cin.getline(a,5);
 output:appl\0
 It extracts n-1 characters and puts \0 at nth position. (n-1) chars+ \0 is stored in the char-array.
-If delimiter is met, it stores till the delimiter(included). but it discards it and puts \0.Storing stops here. next reading 
+If delimiter is met, it stores till the delimiter(included). but it discards the delimiter and puts \0.Storing stops here. next reading 
 starts after the delimiter.
 input: apple
-cin.getline(a,20,'l');
-appl<-pointer->e
+cin.getline(a,20,'l'); 
+appl<-pointer-> then app\0
 cin.getline(a,20);
 e\0
 
