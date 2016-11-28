@@ -6,22 +6,42 @@
 #include<graphics.h>
 #include<fstream.h>
 
+/*
+  THIS FUNCTION CREATES THE INTRO
+  SCREEN.
+*/
+
 void intro()
 {
-  settextstyle(7,HORIZ_DIR,7);  // For setting the text: font,direction,size
-  setcolor(3);	  //Set color to blue
-  outtextxy(100,150,"PIANO TILES"); //Place the text at 100,100
-  settextstyle(7,HORIZ_DIR,3); //change the font size
-  outtextxy(150,250,"BY: NAMAN & AKARSH" );
-  getch(); //wait for user to press any button
-  setcolor(15); //set color to default(black)
-  cleardevice(); //clear the screen
-}
+  int maxx = getmaxx();
+  int maxy = getmaxy();
+  int font=3;
+  int black=15;
+  int blue=3;
+  int white = 15;
+  int size1=8, size2=4;
 
+  setbkcolor(white);
+  settextstyle(font,HORIZ_DIR,size1);  // For setting the text: font,direction,size
+  setcolor(blue);	  //Set color to blue
+  outtextxy(maxx/5,maxy/4,"PIANO TILES"); //Place the text at 100,100
+  settextstyle(font,HORIZ_DIR,size2); //change the font size
+  outtextxy(maxx/5,maxx/3,"BY: GROUP 4" );
+  getch(); //wait for user to press any button
+  setcolor(black); //set color to default(black)
+  cleardevice(); //clear the screen
+  setbkcolor(0);
+}
+/*
+  GAME OVER SCREEN
+*/
 void over()
 {
- settextstyle(3,HORIZ_DIR,7);  // For setting the text: font,direction,size
- setcolor(4);	  //Set color to red
+ int size=7;
+ int font=3;
+ int red=4;
+ settextstyle(font,HORIZ_DIR,size);  // For setting the text: font,direction,size
+ setcolor(red);	  //Set color to red
  outtextxy(140,10,"Game over!"); //Place the text at 100,100
 
 }
