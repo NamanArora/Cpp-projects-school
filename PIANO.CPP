@@ -6,6 +6,36 @@
 #include<graphics.h>
 #include<fstream.h>
 
+struct node 
+{
+	int data;
+	node *next;
+};
+
+void setup()
+{
+	node *t= new node;
+	t->data=0;
+	t->next=NULL;
+}
+
+
+class queue
+{
+	int arr[4];
+	
+	public:
+
+void set(int loc, int data)
+{
+	arr[loc]=data;
+}
+int get(int t)
+{
+	return arr[t];
+}
+};
+
 /*
   THIS FUNCTION CREATES THE INTRO
   SCREEN.
@@ -122,10 +152,11 @@ void bar(int time)
 
 void main()
 {
+ queue q;
  int gd=DETECT,gm;
  initgraph(&gd,&gm, "C:\\TC\\BGI");
  intro();
- int a,arr[4]={0},i=-1,b=1;
+ int a,i=-1,b=1;
  int score=-1; //result increments the val
  char press;
  time_t start,end; //time_t variables can store values returned by time function
@@ -139,11 +170,11 @@ void main()
  bar(diff); //shows the time bar
  a=rnd(); //get the next box using randomize func
  grid(); //draw the grid again else the old boxes wont go away
- arr[0]=a; //store the value in our grid array
+ q.set(0,a); //store the value in our grid array
  if(i<=3) //wait for array to get filled
  i++;
  for(int k=0; k<4; k++) //fill the colour
- fill(arr[k]); //color the boxes corresponding to our grid array
+ fill(q.get(k)); //color the boxes corresponding to our grid array
  if(i>=3) //dont start game until array is filled
  {
  score++; //score keeper integer
@@ -158,7 +189,7 @@ void main()
 	then show green colour on the button else red.
  */
  case 'a': // Button 'a' from keyboard
- if(arr[3]==10)
+ if(q.get(3)==10)
  setfillstyle(SOLID_FILL, GREEN);
  else
  {
@@ -169,7 +200,7 @@ void main()
  break;
 
  case 's': // Button 's' from keyboard
- if(arr[3]==11)
+ if(q.get(3)==11)
  setfillstyle(SOLID_FILL, GREEN);
  else
  {
@@ -180,7 +211,7 @@ void main()
  break;
 
  case 'd': // Button 'd' from keyboard
- if(arr[3]==12)
+ if(q.get(3)==12)
  setfillstyle(SOLID_FILL, GREEN);
  else
  {
@@ -196,9 +227,12 @@ void main()
  }
 
  for(int f=0; f<=i; f++) //move the box down
- arr[f]+=3 ;
+ q.set(f,q.get(f)+3);
+ //q.arr[f]+=3 ;
  for(int d=3; d>=1; d--)
- arr[d]=arr[d-1]; //shifts the array to the right to accomodate new val
+ q.set(d,q.get(d-1));
+
+ //q.arr[d]=q.arr[d-1]; //shifts the array to the right to accomodate new val
  delay(100);
  cleardevice();
  time(&end); //get the time
