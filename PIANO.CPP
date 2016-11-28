@@ -6,33 +6,56 @@
 #include<graphics.h>
 #include<fstream.h>
 
-struct node 
+struct node
 {
 	int data;
 	node *next;
 };
 
-void setup()
+class queue
+{
+	node *head;
+
+	public:
+
+	queue()
+	{
+		head=NULL;
+	}
+
+node* setup()
 {
 	node *t= new node;
 	t->data=0;
 	t->next=NULL;
+	return t;
 }
 
-
-class queue
+void createlist()
 {
-	int arr[4];
-	
-	public:
+    head = setup();
+    head->next = setup();
+    head->next->next = setup();
+    head->next->next->next = setup();
+}
 
 void set(int loc, int data)
 {
-	arr[loc]=data;
+	node *t=head;
+    for(int i=0; i<loc; i++)
+    {
+	t=t->next;
+    }
+    t->data=data;
 }
-int get(int t)
+int get(int index)
 {
-	return arr[t];
+	node *t=head;
+    for(int i=0; i<index; i++)
+    {
+	t=t->next;
+    }
+    return t->data;
 }
 };
 
@@ -57,11 +80,40 @@ void intro()
   outtextxy(maxx/5,maxy/4,"PIANO TILES"); //Place the text at 100,100
   settextstyle(font,HORIZ_DIR,size2); //change the font size
   outtextxy(maxx/5,maxx/3,"BY: GROUP 4" );
+
+  outtextxy(maxx/5,maxy/2,"Press any key to continue..");
+  settextstyle(font,HORIZ_DIR,2);
+  //outtextxy(maxx/5-5,maxy/2+40,"/");
+  for(int i=0; i<400; i++)
+  {
+	outtextxy(maxx/5-5+i,maxy/2+40,"/");
+	delay(5);
+
+  }
+
+
   getch(); //wait for user to press any button
   setcolor(black); //set color to default(black)
   cleardevice(); //clear the screen
   setbkcolor(0);
 }
+
+void start()
+{
+	setbkcolor(15);
+	setcolor(4);
+	settextstyle(3,HORIZ_DIR,15);
+	outtextxy(getmaxx()/3+30, getmaxy()/3,"1");
+}
+
+void controls()
+{
+  cleardevice();
+  setbkcolor(15);
+  getch();
+  //setbkcolor(0);
+}
+
 /*
   GAME OVER SCREEN
 */
@@ -70,27 +122,56 @@ void over()
  int size=7;
  int font=3;
  int red=4;
+ setbkcolor(0);
  settextstyle(font,HORIZ_DIR,size);  // For setting the text: font,direction,size
  setcolor(red);	  //Set color to red
  outtextxy(140,10,"Game over!"); //Place the text at 100,100
 
 }
 
+/*
+	THIS FUNCTION CREATES THE MAIN
+	LAYOUT OF OUR 'TILES'. IT RENDERS
+	A 4X3 GRID EVERY TIME THE SCREEN
+	REFRESHES.
+	THE COORDINATES ARE SET KEEPING IN
+	MIND THAT THE LAYOUT LOOKS SAME IN
+	ALL THE RESOLUTIONS.
+	THE MONITOR BEHAVES LIKE A
+	CARTESIAN PLACE INSIDE A 4TH QUADRANT.
+*/
+
 void grid()
 {
- //Monitor is in the 4th quadrant
- line((getmaxx()*3/4)*1/4,0,(getmaxx()*3/4)*1/4,getmaxy()); // keep the x axis constant and draw 4 lines vertically
- line((getmaxx()*3/4)*2/4,0,(getmaxx()*3/4)*2/4,getmaxy());
- line((getmaxx()*3/4)*3/4,0,(getmaxx()*3/4)*3/4,getmaxy());
- line((getmaxx()*3/4)*4/4,0,(getmaxx()*3/4)*4/4,getmaxy());
- line(getmaxx()*3/16,getmaxy()/4,getmaxx()*3/4,getmaxy()/4); // keep y axis constant and draw 3 lines horizontally
- line(getmaxx()*3/16,getmaxy()/2,getmaxx()*3/4,getmaxy()/2);
- line(getmaxx()*3/16,getmaxy()*3/4,getmaxx()*3/4,getmaxy()*3/4);
+	setbkcolor(15);
+	setcolor(3);
+ int maxx=getmaxx();
+ int maxy=getmaxy();
+ line((maxx*3/4)*1/4,0,(maxx*3/4)*1/4,maxy); // keep the x axis constant and draw 4 lines vertically
+ line((maxx*3/4)*2/4,0,(maxx*3/4)*2/4,maxy);
+ line((maxx*3/4)*3/4,0,(maxx*3/4)*3/4,maxy);
+ line((maxx*3/4)*4/4,0,(maxx*3/4)*4/4,maxy);
+ line(maxx*3/16,maxy/4,maxx*3/4,maxy/4); // keep y axis constant and draw 3 lines horizontally
+ line(maxx*3/16,maxy/2,maxx*3/4,maxy/2);
+ line(maxx*3/16,maxy*3/4,maxx*3/4,maxy*3/4);
 }
+
+/*
+	THIS FUNCTION FILLS COLORS
+	IN OUR TILES BY SPECIFYING
+	THE COORDINATE FOR EACH OF OUR
+	TILE.
+	THE TILES ARE NUMBERED FROM 1-12
+	FROM WHICH WE FILTER OUT THE TILES
+	WHICH NEED TO BE COLOURED USING THE
+	SWITCH CASE.
+
+*/
 
 void fill(int i)
 {
-setfillstyle(SOLID_FILL, BLUE); //blue color for the tiles
+setfillstyle(SOLID_FILL, 5); //blue color for the tiles
+int color=3;
 switch(i) // i tells which tile to fill
  {
 /*
@@ -99,63 +180,85 @@ switch(i) // i tells which tile to fill
 	The last paramater tells the color of the boundary that needs to be filled
  */
 	case 1:
-	floodfill((getmaxx()*3/4)*1/4+1,0,WHITE);
+	floodfill((getmaxx()*3/4)*1/4+1,0,color);
 	break;
 	case 2:
-	floodfill((getmaxx()*3/4)*2/4+1,0,WHITE);
+	floodfill((getmaxx()*3/4)*2/4+1,0,color);
 	break;
 	case 3:
-	floodfill((getmaxx()*3/4)*3/4+1,0,WHITE);
+	floodfill((getmaxx()*3/4)*3/4+1,0,color);
 	break;
 	case 4:
-	floodfill((getmaxx()*3/4)*1/4+1,getmaxy()/4+1,WHITE);
+	floodfill((getmaxx()*3/4)*1/4+1,getmaxy()/4+1,color);
 	break;
 	case 5:
-	floodfill((getmaxx()*3/4)*2/4+1,getmaxy()/2-1,WHITE);
+	floodfill((getmaxx()*3/4)*2/4+1,getmaxy()/2-1,color);
 	break;
 	case 6:
-	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()/2-1,WHITE);
+	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()/2-1,color);
 	break;
 	case 7:
-	floodfill((getmaxx()*3/4)*1/4+1,getmaxy()/2+1,WHITE);
+	floodfill((getmaxx()*3/4)*1/4+1,getmaxy()/2+1,color);
 	break;
 	case 8:
-	floodfill((getmaxx()*3/4)*2/4+1,getmaxy()/2+1,WHITE);
+	floodfill((getmaxx()*3/4)*2/4+1,getmaxy()/2+1,color);
 	break;
 	case 9:
-	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()/2+1,WHITE);
+	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()/2+1,color);
 	break;
 	case 10:
-	floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,WHITE);
+	floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,color);
 	break;
 	case 11:
-	floodfill((getmaxx()*3/4)*2/4+1,getmaxy()*3/4+1,WHITE);
+	floodfill((getmaxx()*3/4)*2/4+1,getmaxy()*3/4+1,color);
 	break;
 	case 12:
-	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,WHITE);
+	floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,color);
 	break;
  }
 }
 
+/*
+	SINCE RANDOM() FUNCTION GENERATES
+	SAME VALUE AT EACH RUN. TO PREVENT THAT
+	FROM HAPPENING WE EXPLICITLY PROVIDE
+	A SEED VALUE TO THE RANDOM NUMBERED
+	GENERATOR SO THAT WE GET NEW VALUES AT
+	EACH RUN.
+*/
+
 int rnd()
 {
- return rand()%3+1 ; //get any rand var between 1 and 3, stdlib.h
+ int rnd_num=rand();
+ return (rnd_num%3)+1 ; //get any rand var between 1 and 3, stdlib.h
 }
+
+
+
+/*
+	THIS FUNCTION CREATES A TIME BAR
+	BY CREATING A RECTANGLE AND INCREASING
+	ITS LENGHT BY 16PX FOR EVERY SECOND PASSED.
+*/
 
 void bar(int time)
 {
+ setcolor(5);
  int update=time*16; //no of pixels to update on each second
  rectangle(0,getmaxy()-update,50,getmaxy()); //draw the bar with the coordinates
  setfillstyle(SOLID_FILL, RED); //colour to be filled is set to RED
- floodfill(1,getmaxy()-time+1,WHITE); //Fill the colour
+ floodfill(1,getmaxy()-time,5); //Fill the colour
 }
+
 
 void main()
 {
  queue q;
+ q.createlist();
  int gd=DETECT,gm;
  initgraph(&gd,&gm, "C:\\TC\\BGI");
- intro();
+ //intro();
+ start();
  int a,i=-1,b=1;
  int score=-1; //result increments the val
  char press;
@@ -196,7 +299,7 @@ void main()
  b=0;
  setfillstyle(SOLID_FILL, RED);
  }
- floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,WHITE);
+ floodfill((getmaxx()*3/4)*1/4+1,getmaxy()*3/4+1,3);
  break;
 
  case 's': // Button 's' from keyboard
@@ -207,7 +310,7 @@ void main()
  b=0;
  setfillstyle(SOLID_FILL, RED);
  }
- floodfill((getmaxx()*3/4)*2/4+1,getmaxy()*3/4+1,WHITE);
+ floodfill((getmaxx()*3/4)*2/4+1,getmaxy()*3/4+1,3);
  break;
 
  case 'd': // Button 'd' from keyboard
@@ -218,7 +321,7 @@ void main()
  b=0;
  setfillstyle(SOLID_FILL, RED);
  }
- floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,WHITE);
+ floodfill((getmaxx()*3/4)*3/4+1,getmaxy()*3/4+1,3);
  break;
 
  default: //if any other key is pressed
@@ -251,12 +354,13 @@ void main()
  scores<< endl << name << " " << score ; //write the name and score to the file
  else
  cout << "Unable to save score!";
+
  cout << endl << endl<< "Scores: " << endl << endl;
  scores.seekg(ios::beg);  //move the pointer to the starting of file
  while(!scores.eof()) //display al the previous score
  {
  scores.getline(name,20,' ');
- cout << name;
+ cout << '\t' << name;
  scores.getline(name,20);
  cout << '\t' << name << endl;
  }
