@@ -101,9 +101,25 @@ void intro()
 void start()
 {
 	setbkcolor(15);
-	setcolor(4);
-	settextstyle(3,HORIZ_DIR,15);
-	outtextxy(getmaxx()/3+30, getmaxy()/3,"1");
+	setcolor(BLUE);
+	settextstyle(9,HORIZ_DIR,15);
+
+	outtextxy(getmaxx()/3-30, getmaxy()/3-40,"3");
+	delay(600);
+	cleardevice();
+	outtextxy(getmaxx()/3+30, getmaxy()/3-40,"2");
+	delay(600);
+	cleardevice();
+	outtextxy(getmaxx()/3+90, getmaxy()/3-40,"1");
+	delay(600);
+	cleardevice();
+	outtextxy(getmaxx()/3-40, getmaxy()/3-40,"GO!");
+	delay(600);
+	cleardevice();
+	setcolor(15); //set color to default(black)
+  cleardevice(); //clear the screen
+  setbkcolor(15);
+
 }
 
 void controls()
@@ -257,7 +273,7 @@ void main()
  q.createlist();
  int gd=DETECT,gm;
  initgraph(&gd,&gm, "C:\\TC\\BGI");
- //intro();
+ intro();
  start();
  int a,i=-1,b=1;
  int score=-1; //result increments the val
